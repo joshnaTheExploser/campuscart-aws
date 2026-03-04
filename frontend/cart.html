@@ -430,7 +430,7 @@ function placeOrder(e){
     userId: userId
   }));
 
-  fetch("http://localhost:5000/order",{
+  fetch("https://campuscart-aws-gb49.vercel.app/order",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify(orderData)
