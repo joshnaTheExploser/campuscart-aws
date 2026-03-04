@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Advanced Invoice</title>
+</head>
+
+<!-- Header -->
+<div style="background:purple; color:white; padding:15px; text-align:center;">
+<h1>Stationery Store</h1>
+<p>Your One-Stop Shop for School & Office Supplies</p>
+</div>
+
+<!-- Navigation -->
+<div style="background:#ffffff; padding:10px; text-align:center; border-bottom:1px solid #ddd;">
+<a href="index.html" style="margin:15px;">Home</a>
+<a href="products.html" style="margin:15px;">Products</a>
+<a href="wishlist.html" style="margin:15px;">Wishlist</a>
+<a href="cart.html" style="margin:15px;">Cart</a>
+<a href="contact.html" style="margin:15px;">Contact</a>
+<a href="account.html" style="margin:15px;">Account</a>
+</div>
+
+<body style="font-family:Arial; background:#eef1f5; margin:0; padding:20px;">
+
+<div id="invoiceBox" style="max-width:850px; margin:auto; background:white; padding:35px; border-radius:12px; box-shadow:0 0 15px rgba(0,0,0,0.1);">
+
+<!-- Header -->
+<div style="display:flex; justify-content:space-between; border-bottom:3px solid purple; padding-bottom:15px;">
+<div>
+<h1 style="margin:0; color:purple;">Stationery Store</h1>
+<p style="margin:0; color:#666;">Professional Invoice</p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<div style="text-align:right;">
+<p><b>Date:</b> <span id="date"></span></p>
+<p><b>Invoice No:</b> <span id="invoice"></span></p>
+</div>
+</div>
+
+<!-- Customer Details -->
+<div style="margin-top:25px;">
+<h3>Customer Details</h3>
+<p>Name: <span id="custName">Guest Customer</span></p>
+<p>Email: <span id="custEmail">Not Provided</span></p>
+</div>
+
+<!-- Table -->
+<table style="width:100%; border-collapse:collapse; margin-top:20px;">
+<thead>
+<tr style="background:purple; color:white;">
+<th style="padding:12px;">Item</th>
+<th>Price</th>
+<th>Qty</th>
+<th>Total</th>
+</tr>
+</thead>
+
+<tbody id="rows"></tbody>
+</table>
+
+<!-- Calculation -->
+<div style="margin-top:25px; text-align:right; font-size:18px;">
+<p>Subtotal: ₹ <span id="subtotal"></span></p>
+<p>GST (6%): ₹ <span id="gst"></span></p>
+<p id="donationLine" style="color:#27ae60; display:none;">🌱 NGO Donation (2%): ₹ <span id="donationAmt"></span></p>
+<h2 style="color:purple;">Grand Total: ₹ <span id="grand"></span></h2>
+</div>
+
+<!-- Buttons -->
+<div style="text-align:center; margin-top:30px;">
+<button onclick="window.print()" 
+style="padding:12px 25px; margin:10px; background:purple; color:white; border:none; border-radius:6px; font-size:16px;">
+Print Invoice
+</button>
+
+<button onclick="downloadPDF()" 
+style="padding:12px 25px; margin:10px; background:green; color:white; border:none; border-radius:6px; font-size:16px;">
+Download PDF
+</button>
+</div>
+
+</div>
+
+<script>
+let saved = JSON.parse(localStorage.getItem("lastInvoice")) || {};
+let cart = saved.order?.items || [];
+
+
+// Fetch user info saved from cart.html
+let user = JSON.parse(localStorage.getItem("user")) || {};
+document.getElementById("custName").innerText = user.name || "Guest Customer";
+document.getElementById("custEmail").innerText = user.email || "Not Provided";
+
+
+let subtotal=0;
+let html="";
+
+cart.forEach(item=>{
+let total=item.price*item.qty;
+subtotal+=total;
+
+html+=`
+<tr style="border-bottom:1px solid #ddd;">
+<td style="padding:10px;">${item.name}</td>
+<td>₹${item.price}</td>
+<td>${item.qty}</td>
+<td>₹${total}</td>
+</tr>`;
+});
+
+document.getElementById("rows").innerHTML=html;
+
+ //calculations
+let gst=parseFloat((subtotal*0.06).toFixed(2));
+let donationAmt = saved.order?.donationAmount || 0;
+let grand=subtotal+gst+donationAmt;
+
+document.getElementById("subtotal").innerText=subtotal.toFixed(2);
+document.getElementById("gst").innerText=gst.toFixed(2);
+if(donationAmt > 0){
+ document.getElementById("donationLine").style.display="block";
+  document.getElementById("donationAmt").innerText=donationAmt.toFixed(2);
+}
+document.getElementById("grand").innerText=grand.toFixed(2);
+
+// date + invoice
+document.getElementById("date").innerText = new Date(saved.order?.date).toLocaleDateString() || "N/A";
+document.getElementById("invoice").innerText = saved.invoice || "N/A";
+
+// PDF download
+async function downloadPDF(){
+
+const { jsPDF } = window.jspdf;
+const pdf = new jsPDF();
+
+let saved = JSON.parse(localStorage.getItem("lastInvoice")) || {};
+let order = saved.order || {};
+
+let y = 20;
+
+/* ---------- HEADER ---------- */
+pdf.setFont("helvetica","bold");
+pdf.setFontSize(20);
+pdf.text("STATIONERY STORE",105,y,{align:"center"});
+
+y+=8;
+pdf.setFontSize(11);
+pdf.setFont("helvetica","normal");
+pdf.text("Professional Tax Invoice",105,y,{align:"center"});
+
+y+=15;
+
+/* ---------- INFO BOX ---------- */
+pdf.setDrawColor(0);
+pdf.rect(15,y-5,180,30);
+
+pdf.text("Invoice: "+saved.invoice,20,y);
+pdf.text("Date: "+ new Date(order.date).toLocaleDateString(),140,y);
+
+y+=10;
+pdf.text("Customer: "+order.name,20,y);
+pdf.text("Phone: "+order.phone,140,y);
+
+y+=10;
+pdf.text("Address: "+order.address,20,y);
+
+y+=20;
+
+/* ---------- TABLE HEADER ---------- */
+pdf.setFont("helvetica","bold");
+pdf.setFillColor(230,230,230);
+pdf.rect(15,y-7,180,10,"F");
+
+pdf.text("Item",20,y);
+pdf.text("Price",100,y);
+pdf.text("Qty",130,y);
+pdf.text("Total",165,y);
+
+y+=5;
+pdf.line(15,y,195,y);
+
+y+=10;
+
+/* ---------- ITEMS ---------- */
+pdf.setFont("helvetica","normal");
+
+let total=0;
+
+(order.items||[]).forEach(item=>{
+let t=item.price*item.qty;
+total+=t;
+
+pdf.text(item.name,20,y);
+pdf.text("Rs "+item.price,100,y);
+pdf.text(String(item.qty),135,y);
+pdf.text("Rs "+t,165,y);
+
+y+=10;
+
+/* auto page break */
+if(y>270){
+pdf.addPage();
+y=20;
+}
+});
+
+/* ---------- TOTAL BOX ---------- */
+y+=10;
+
+let gst=parseFloat((total*0.06).toFixed(2));
+let donationPdf=parseFloat((order.donationAmount||0));
+let grand=total+gst+donationPdf;
+
+let boxHeight = donationPdf > 0 ? 50 : 40;
+pdf.setDrawColor(0);
+pdf.rect(110,y-5,85,boxHeight);
+
+pdf.setFont("helvetica","bold");
+pdf.text("Subtotal:",115,y);
+pdf.text("Rs "+total.toFixed(2),170,y);
+
+y+=10;
+pdf.text("GST (6%):",115,y);
+pdf.text("Rs "+gst.toFixed(2),170,y);
+
+y+=10;
+if(donationPdf > 0){
+  pdf.text("NGO Donation:",115,y);
+  pdf.text("Rs "+donationPdf.toFixed(2),170,y);
+  y+=10;
+}
+
+pdf.setFontSize(13);
+pdf.text("Grand Total:",115,y);
+pdf.text("Rs "+grand.toFixed(2),170,y);
+
+/* ---------- FOOTER ---------- */
+y+=20;
+pdf.setFontSize(10);
+pdf.setFont("helvetica","italic");
+pdf.text("Thank you for shopping with us!",105,y,{align:"center"});
+
+/* ---------- SAVE ---------- */
+pdf.save("Invoice_"+saved.invoice+".pdf");
+}
+
+// clear cart after invoice
+localStorage.removeItem("cart");
+</script>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Contact - Stationery Store</title>
+</head>
+
+<body style="margin:0; font-family:Arial; background:#f5f5f5;">
+
+<!-- Header -->
+<div style="background:purple; color:white; padding:15px; text-align:center;">
+<h1>CAMPUSCART</h1>
+<p>Your One-Stop Shop for School & Office Supplies</p>
+</div>
+
+<!-- Navigation -->
+<div style="background:#ffffff; padding:10px; text-align:center; border-bottom:1px solid #ddd;">
+<a href="index.html" style="margin:15px;">Home</a>
+<a href="products.html" style="margin:15px;">Products</a>
+<a href="wishlist.html" style="margin:15px;">Wishlist</a>
+<a href="cart.html" style="margin:15px;">Cart</a>
+<a href="contact.html" style="margin:15px;">Contact</a>
+<a href="account.html" style="margin:15px;">Account</a>
+</div>
+
+<!-- Title -->
+<div style="padding:40px; text-align:center;">
+<h2>Contact Us 📞</h2>
+<p>We’d love to hear from you!</p>
+</div>
+
+<!-- Form Box -->
+<div style="background:white; margin:20px auto; padding:30px; border-radius:10px; width:350px; box-shadow:0 0 10px #ccc;">
+
+<form id="contactForm">
+<label>Full Name:</label><br>
+<input id="name" type="text" style="width:100%; padding:8px; margin:8px 0;"><br>
+
+<label>Contact Number:</label><br>
+<input id="phone" type="text" style="width:100%; padding:8px; margin:8px 0;"><br>
+
+<label>Message:</label><br>
+<textarea id="msg" style="width:100%; padding:8px; margin:8px 0;"></textarea><br>
+
+<button type="submit" style="width:100%; padding:10px; background:purple; color:white; border:none; border-radius:5px;">
+Send Message
+</button>
+</form>
+
+</div>
+
+<!-- Toast -->
+<div id="toast" style="
+visibility:hidden;
+min-width:250px;
+background:green;
+color:white;
+text-align:center;
+padding:16px;
+position:fixed;
+left:50%;
+bottom:30px;
+transform:translateX(-50%);
+border-radius:5px;
+font-weight:bold;
+z-index:1;">
+Message Sent Successfully ✔
+</div>
+
+<!-- Footer -->
+<div style="background:purple; color:white; text-align:center; padding:15px;">
+<p>© 2026 CAMPUSCART | All Rights Reserved</p>
+</div>
+
+<script>
+// Form submission
+document.getElementById("contactForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    let name = document.getElementById("name").value.trim();
+    let phone = document.getElementById("phone").value.trim();
+    let msg = document.getElementById("msg").value.trim();
+
+    // Validation
+    if(name==="" || phone==="" || msg===""){
+        alert("Please fill all fields");
+        return;
+    }
+
+    if(!/^[a-zA-Z ]+$/.test(name)){
+        alert("Name should contain only letters");
+        return;
+    }
+
+    if(!/^[0-9]{10}$/.test(phone)){
+        alert("Enter valid 10-digit number");
+        return;
+    }
+
+    // Send data to backend
+    try {
+        const response = await fetch("http://localhost:5000/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, phone, message: msg })
+        });
+
+        const data = await response.json();
+        if(response.ok){
+            showToast();
+            document.getElementById("contactForm").reset();
+        } else {
+            alert(data.msg);
+        }
+    } catch (err) {
+        alert("Server error, try again later");
+    }
+});
+
+// Toast function
+function showToast(){
+    let t = document.getElementById("toast");
+    t.style.visibility = "visible";
+    setTimeout(()=>{ t.style.visibility="hidden"; }, 3000);
+}
+</script>
+
+</body>
+</html>

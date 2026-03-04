@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Account - Stationery Store</title>
+    <style>
+        /* ---- Design Tokens ---- */
+        :root {
+            --purple: #6a0dad;
+            --purple-dark: #4b0082;
+            --purple-light: #f3e8ff;
+            --green: #27ae60;
+            --red: #e74c3c;
+            --bg: #eef1f5;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-muted: #666666;
+            --border: #dddddd;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+            --radius: 12px;
+            --font: Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a { text-decoration: none; color: var(--text); }
+        a:hover { color: var(--purple); }
+
+        /* ---- Header ---- */
+        .header {
+            background:purple;
+            color: white;
+            padding: 18px;
+            text-align: center;
+        }
+        .header h1 { font-size: 24px; margin-bottom: 4px; }
+        .header p { font-size: 13px; opacity: 0.85; }
+
+        /* ---- Nav ---- */
+        .nav {
+            background: white;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .nav a {
+            margin: 0 15px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .nav a:hover { color: var(--purple); }
+        .nav a.active { color: var(--purple); font-weight: 700; }
+
+        /* ---- Page Wrapper ---- */
+        .page-wrapper {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+
+        /* ---- Login Box ---- */
+        #loginSection {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px 35px;
+            text-align: center;
+            animation: fadeUp 0.4s ease;
+        }
+        #loginSection h2 { color: var(--purple); margin-bottom: 8px; font-size: 22px; }
+        #loginSection p { color: var(--text-muted); margin-bottom: 25px; font-size: 14px; }
+
+        .form-group { margin-bottom: 14px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--text-muted); }
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .form-group input:focus { border-color: var(--purple); }
+
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: var(--purple);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: background 0.3s;
+        }
+        .btn-primary:hover { background: var(--purple-dark); }
+
+        /* ---- Account Section ---- */
+        #accountSection { display: none; animation: fadeUp 0.4s ease; }
+
+        .account-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: var(--card-bg);
+            padding: 22px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+        .avatar {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: var(--purple);
+            color: white;
+            font-size: 26px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .account-header-info h3 { font-size: 18px; margin-bottom: 4px; }
+        .account-header-info p { font-size: 13px; color: var(--text-muted); }
+
+        .btn-logout {
+            margin-left: auto;
+            padding: 9px 18px;
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-logout:hover { background: #c0392b; }
+
+        /* ---- Tabs ---- */
+        .tabs {
+            display: flex;
+            gap: 0;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--purple);
+            border-bottom: 3px solid var(--purple);
+            background: var(--purple-light);
+        }
+        .tab-btn:hover:not(.active) { background: #f9f9f9; }
+
+        /* ---- Tab Content ---- */
+        .tab-content { display: none; animation: fadeUp 0.3s ease; }
+        .tab-content.active { display: block; }
+
+        /* ---- Profile Card ---- */
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+        .profile-card h3 {
+            color: var(--purple);
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .profile-row {
+            display: flex;
+            align-items: center;
+            padding: 13px 0;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 12px;
+        }
+        .profile-row:last-child { border-bottom: none; }
+        .profile-label {
+            width: 130px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .profile-value { font-size: 15px; color: var(--text); word-break: break-all; }
+        .badge {
+            display: inline-block;
+            background: var(--purple-light);
+            color: var(--purple);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+        }
+
+        /* ---- Orders Tab ---- */
+        .orders-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .orders-meta h3 { font-size: 16px; color: var(--text-muted); }
+        .orders-count {
+            background: var(--purple);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .order-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 22px 25px;
+            margin-bottom: 18px;
+            animation: fadeUp 0.3s ease;
+        }
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .order-invoice {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--purple);
+        }
+        .order-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .order-status {
+            display: inline-block;
+            background: #e8f8f1;
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .order-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .order-items-table th {
+            background: #f7f7f7;
+            padding: 9px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .order-items-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            color: var(--text);
+        }
+        .order-items-table tr:last-child td { border-bottom: none; }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+        }
+        .order-payment { color: var(--text-muted); }
+        .order-total { font-size: 16px; font-weight: 700; color: var(--purple); }
+
+        /* ---- Empty / Loading States ---- */
+        .state-box {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 50px 25px;
+            text-align: center;
+        }
+        .state-box .icon { font-size: 48px; margin-bottom: 14px; }
+        .state-box h3 { font-size: 18px; margin-bottom: 8px; }
+        .state-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+        .state-box a button {
+            padding: 11px 24px;
+            background: var(--purple);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .state-box a button:hover { background: var(--purple-dark); }
+
+        .spinner {
+            text-align: center;
+            padding: 40px;
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+        .spinner::before {
+            content: "";
+            display: block;
+            width: 36px;
+            height: 36px;
+            border: 4px solid var(--border);
+            border-top-color: var(--purple);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 14px;
+        }
+
+        /* ---- Footer ---- */
+        .footer {
+          /*  background: var(--purple) ----*/
+            background: purple;
+            color: white;
+            text-align: center;
+            padding: 16px;
+            margin-top: 50px;
+            font-size: 14px;
+        }
+
+        /* ---- Animations ---- */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <h1>CAMPUSCART</h1>
+    <p>Your One-Stop Shop for School & Office Supplies</p>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="wishlist.html">Wishlist</a>
+    <a href="cart.html">Cart</a>
+    <a href="contact.html">Contact</a>
+    <a href="account.html" class="active">Account</a>
+</div>
+
+<!-- Page Content -->
+<div class="page-wrapper">
+
+    <!-- ===== LOGIN SECTION (shown when not logged in) ===== -->
+    <div id="loginSection">
+        <div style="font-size:52px; margin-bottom:14px;">👤</div>
+        <h2>Login to Your Account</h2>
+        <p>Enter your name and email to view your profile and orders.</p>
+
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="loginName" placeholder="e.g. Dandika Joshna">
+        </div>
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="e.g. dandika@example.com">
+        </div>
+
+        <button class="btn-primary" onclick="doLogin()">Login →</button>
+    </div>
+
+    <!-- ===== ACCOUNT SECTION (shown when logged in) ===== -->
+    <div id="accountSection">
+
+        <!-- Account Header Bar -->
+        <div class="account-header">
+            <div class="avatar" id="avatarInitial">U</div>
+            <div class="account-header-info">
+                <h3 id="headerName">—</h3>
+                <p id="headerEmail">—</p>
+            </div>
+            <button class="btn-logout" onclick="doLogout()">Logout</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('profile', this)">👤 &nbsp;Profile</button>
+            <button class="tab-btn" onclick="switchTab('orders', this)">📦 &nbsp;My Orders</button>
+        </div>
+
+        <!-- ---- Profile Tab ---- -->
+        <div class="tab-content active" id="tab-profile">
+            <div class="profile-card">
+                <h3>Profile Information</h3>
+
+                <div class="profile-row">
+                    <span class="profile-label">Full Name</span>
+                    <span class="profile-value" id="profileName">—</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">Email</span>
+                    <span class="profile-value" id="profileEmail">—</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">User ID</span>
+                    <span class="profile-value">
+                        <span class="badge" id="profileUserId">—</span>
+                    </span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">Account Type</span>
+                    <span class="profile-value">
+                        <span class="badge">Customer</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ---- Orders Tab ---- -->
+        <div class="tab-content" id="tab-orders">
+
+            <div class="orders-meta">
+                <h3>Your recent orders</h3>
+                <span class="orders-count" id="ordersCount">0 orders</span>
+            </div>
+
+            <div id="ordersContainer">
+                <div class="spinner">Loading your orders…</div>
+            </div>
+
+        </div>
+
+    </div><!-- end #accountSection -->
+
+</div><!-- end .page-wrapper -->
+
+<!-- Footer -->
+<div class="footer">
+    <p>© 2026 CAMPUSCART | All Rights Reserved</p>
+</div>
+
+<script>
+    const BASE_URL = "http://localhost:5000";
+
+    /* -------- Helpers -------- */
+    function getUser() {
+        return JSON.parse(localStorage.getItem("user")) || null;
+    }
+
+    function getInitial(name) {
+        return name ? name.charAt(0).toUpperCase() : "U";
+    }
+
+    /* -------- Login / Logout -------- */
+    function doLogin() {
+        const name  = document.getElementById("loginName").value.trim();
+        const email = document.getElementById("loginEmail").value.trim();
+
+        if (!name || !email) {
+            alert("Please fill in both name and email.");
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        // Reuse existing userId if present so previous orders still match
+        const existing = getUser();
+        const userId = (existing && existing.userId) ? existing.userId : Date.now().toString();
+
+        localStorage.setItem("user", JSON.stringify({ name, email, userId }));
+        showAccount();
+    }
+
+    function doLogout() {
+        if (!confirm("Are you sure you want to logout?")) return;
+        localStorage.removeItem("user");
+        showLogin();
+    }
+
+    /* -------- View toggling -------- */
+    function showLogin() {
+        document.getElementById("loginSection").style.display  = "block";
+        document.getElementById("accountSection").style.display = "none";
+    }
+
+    function showAccount() {
+        document.getElementById("loginSection").style.display  = "none";
+        document.getElementById("accountSection").style.display = "block";
+
+        const user = getUser();
+        if (!user) return;
+
+        // Populate header
+        document.getElementById("avatarInitial").innerText = getInitial(user.name);
+        document.getElementById("headerName").innerText    = user.name;
+        document.getElementById("headerEmail").innerText   = user.email;
+
+        // Populate profile tab
+        document.getElementById("profileName").innerText   = user.name;
+        document.getElementById("profileEmail").innerText  = user.email;
+        document.getElementById("profileUserId").innerText = user.userId;
+
+        // Load orders from backend — fetch by userId AND by name (covers old orders without userId)
+        loadOrders(user.userId, user.name);
+    }
+
+    /* -------- Tabs -------- */
+    function switchTab(name, btn) {
+        // Hide all tab contents
+        document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+        document.getElementById("tab-" + name).classList.add("active");
+        btn.classList.add("active");
+    }
+
+    /* -------- Render orders list -------- */
+    function renderOrders(orders) {
+        const container = document.getElementById("ordersContainer");
+        document.getElementById("ordersCount").innerText = orders.length + " order" + (orders.length !== 1 ? "s" : "");
+
+        if (orders.length === 0) {
+            container.innerHTML = `
+                <div class="state-box">
+                    <div class="icon">📦</div>
+                    <h3>No Orders Yet</h3>
+                    <p>You haven't placed any orders. Start shopping!</p>
+                    <a href="products.html"><button>Shop Now</button></a>
+                </div>`;
+            return;
+        }
+
+        let html = "";
+        orders.forEach((order, i) => {
+            const date    = order.date ? new Date(order.date).toLocaleString() : "N/A";
+            const payment = order.payment_method ? order.payment_method.toUpperCase() : "N/A";
+            const total   = order.total || 0;
+
+            let itemRows = "";
+            if (order.items && order.items.length > 0) {
+                order.items.forEach(item => {
+                    const lineTotal = (item.price || 0) * (item.qty || 1);
+                    itemRows += `
+                        <tr>
+                            <td>${item.name || "—"}</td>
+                            <td>₹${item.price || 0}</td>
+                            <td>${item.qty || 1}</td>
+                            <td>₹${lineTotal}</td>
+                        </tr>`;
+                });
+            } else {
+                itemRows = `<tr><td colspan="4" style="color:#999; text-align:center;">No item details</td></tr>`;
+            }
+
+            html += `
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-invoice">${order.invoice || ("Order #" + (i + 1))}</div>
+                            <div class="order-date">📅 ${date}</div>
+                        </div>
+                        <span class="order-status">✅ Placed</span>
+                    </div>
+
+                    <table class="order-items-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>${itemRows}</tbody>
+                    </table>
+
+                    <div class="order-footer">
+                        <span class="order-payment">💳 ${payment}</span>
+                        <span class="order-total">Grand Total: ₹${total}</span>
+                    </div>
+                </div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    /* -------- Load Orders: by userId AND by name (merged, deduplicated) -------- */
+    function loadOrders(userId, userName) {
+        const container = document.getElementById("ordersContainer");
+        container.innerHTML = '<div class="spinner">Loading your orders…</div>';
+
+        // Fetch by userId and by name simultaneously
+        const byId   = fetch(BASE_URL + "/my-orders/" + encodeURIComponent(userId)).then(r => r.json()).catch(() => []);
+        const byName = fetch(BASE_URL + "/my-orders-by-name/" + encodeURIComponent(userName)).then(r => r.json()).catch(() => []);
+
+        Promise.all([byId, byName])
+            .then(([idOrders, nameOrders]) => {
+                // Merge and deduplicate by invoice number
+                const seen = new Set();
+                const merged = [];
+                [...idOrders, ...nameOrders].forEach(order => {
+                    const key = order.invoice || order._id;
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        merged.push(order);
+                    }
+                });
+                // Sort by date descending
+                merged.sort((a, b) => new Date(b.date) - new Date(a.date));
+                renderOrders(merged);
+            })
+            .catch(() => {
+                container.innerHTML = `
+                    <div class="state-box">
+                        <div class="icon">⚠️</div>
+                        <h3>Could Not Load Orders</h3>
+                        <p>Make sure the backend server is running on port 5000.</p>
+                    </div>`;
+            });
+    }
+
+    /* -------- Init -------- */
+    window.onload = function () {
+        const user = getUser();
+        if (user && user.userId) {
+            showAccount();
+        } else {
+            showLogin();
+        }
+    };
+</script>
+
+</body>
+</html>

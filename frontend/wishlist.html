@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wishlist</title>
+</head>
+
+<body style="margin:0; font-family:Arial; background:#f2f2f2;">
+
+<!-- Header -->
+<div style="background:purple; color:white; padding:15px; text-align:center;">
+<h1>My Wishlist ❤️</h1>
+</div>
+
+<!-- Navigation -->
+<div style="background:#ffffff; padding:10px; text-align:center; border-bottom:1px solid #ddd;">
+<a href="index.html" style="margin:15px;">Home</a>
+<a href="products.html" style="margin:15px;">Products</a>
+<a href="wishlist.html" style="margin:15px;">Wishlist</a>
+<a href="cart.html" style="margin:15px;">Cart</a>
+<a href="contact.html" style="margin:15px;">Contact</a>
+<a href="account.html" style="margin:15px;">Account</a>
+</div>
+
+<!-- Wishlist Items -->
+<div id="wishlistItems" 
+style="padding:30px; display:flex; flex-wrap:wrap; justify-content:center; gap:20px;">
+</div>
+
+<!-- Footer -->
+<div style="background:purple; color:white; text-align:center; padding:15px; margin-top:40px;">
+<p>© 2026 CAMPUSCART | All Rights Reserved</p>
+</div>
+
+<script>
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+let container = document.getElementById("wishlistItems");
+
+function displayWishlist(){
+if(wishlist.length===0){
+container.innerHTML="<h2 style='width:100%'>Your Wishlist is Empty 💔</h2>";
+return;
+}
+
+container.innerHTML="";
+
+wishlist.forEach((item,index)=>{
+container.innerHTML+=`
+<div style="background:white; padding:15px; width:300px; border-radius:10px; text-align:center;">
+<img src="${item.img}" width="120"><br>
+<h3>${item.name}</h3>
+<p>₹${item.price}</p>
+
+<button onclick="moveToCart(${index})"
+style="background:green;color:white;padding:6px 12px;border:none;border-radius:5px;">
+Move to Cart 🛒
+</button>
+
+<br><br>
+
+<button onclick="removeItem(${index})"
+style="background:red;color:white;padding:6px 12px;border:none;border-radius:5px;">
+Remove ❌
+</button>
+</div>
+`;
+});
+}
+
+function removeItem(i){
+wishlist.splice(i,1);
+localStorage.setItem("wishlist",JSON.stringify(wishlist));
+displayWishlist();
+}
+
+function moveToCart(i){
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let item = wishlist[i];
+
+let existing = cart.find(p=>p.name===item.name);
+
+if(existing){
+existing.qty+=1;
+}else{
+cart.push({...item, qty:1});
+}
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+wishlist.splice(i,1);
+localStorage.setItem("wishlist",JSON.stringify(wishlist));
+
+displayWishlist();
+alert("Moved to cart 🛒");
+}
+
+displayWishlist();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cart & Checkout</title>
+<style>
+/* General */
+body{
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:#f5f6fa;
+  margin:0;
+  color:#333;
+}
+a{text-decoration:none; color:#333;}
+a:hover{color:purple;}
+
+/* Header */
+.header{
+  background:purple;
+  color:white;
+  padding:20px;
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+}
+.header span{font-size:14px; display:block; font-weight:400; margin-top:5px;}
+
+/* Navigation */
+.nav{
+  background:purple;
+  padding:12px 0;
+  text-align:center;
+  border-bottom:1px solid #ddd;
+}
+.nav a{
+  margin:0 20px;
+  font-weight:500;
+  font-size:16px;
+  background: purple;
+}
+.nav a:hover{color:purple;}
+
+/* Container */
+.container{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  max-width:1200px;
+  margin:30px auto;
+  gap:30px;
+  padding:0 15px;
+}
+
+#clearCartBtn {
+    background: #e74c3c;
+    color: white;
+    width: 100%;       /* full width */
+    padding: 16px;     /* bigger padding */
+    font-size: 16px;   /* larger text */
+    border: none;
+    border-radius: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+#clearCartBtn:hover {
+    background: #c0392b;
+}
+/* Cart Section */
+#cartContainer{
+  flex:1 1 450px;
+}
+#cartContainer h2{
+  margin-bottom:15px;
+}
+#cartItems{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+/* --- Updated Cart Card --- */
+.card{
+  background:white;
+  padding:25px;          /* bigger padding */
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.12);
+  display:flex;
+  align-items:center;
+  gap:20px;
+  transition:0.3s;
+}
+.card img{
+  width:120px;           /* bigger image */
+  border-radius:10px;
+}
+.card-info{
+  flex:1;
+}
+.card-info h3{font-size:18px; margin-bottom:5px;}
+.card-info p{font-weight:600; color:#6a0dad;}
+.card-info .qty-buttons button{
+  padding:5px 12px;
+  margin:0 5px;
+  background:#6a0dad;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+.card-info .qty-buttons button:hover{background:#540b94;}
+.card-info .remove-btn{
+  background:#e74c3c;
+  color:white;
+  padding:6px 14px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  margin-top:8px;
+}
+.card-info .remove-btn:hover{background:#c0392b;}
+
+/* Checkout Section */
+.checkout-card{
+  flex:1 1 400px;
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+.checkout-card h2{margin-bottom:15px; font-size:20px;}
+.checkout-card input, .checkout-card textarea, .checkout-card select{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+.checkout-card button{
+  width:100%;
+  padding:14px;
+  margin-top:15px;
+  background:#6a0dad;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+  transition:.3s;
+}
+.checkout-card button:hover{background:#540b94;}
+#cardBox, #upiBox{display:none; margin-top:10px;}
+
+/* Summary */
+.summary{
+  background:#f7f7f7;
+  padding:15px;
+  border-radius:8px;
+  font-size:14px;
+  margin-bottom:15px;
+}
+
+/* Toast */
+#toast{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#333;
+  color:white;
+  padding:14px 20px;
+  border-radius:8px;
+  opacity:0;
+  transform:translateY(20px);
+  transition:.4s;
+  z-index:9999;
+  font-size:14px;
+}
+#toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* Total */
+#total, #checkoutTotal{
+  font-size:18px;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .container{flex-direction:column;}
+}
+</style>
+</head>
+
+<body>
+<div class="header">
+CAMPUSCART
+<span>Your One-Stop Shop for School & Office Supplies</span>
+</div>
+
+
+
+
+
+<!-- Navigation -->
+<div style="background:white; padding:10px; text-align:center; border-bottom:1px solid #ddd;">
+<a href="index.html" style="margin:15px;">Home</a>
+<a href="products.html" style="margin:15px;">Products</a>
+<a href="wishlist.html" style="margin:15px;">Wishlist</a>
+<a href="cart.html" style="margin:15px;">Cart</a>
+<a href="contact.html" style="margin:15px;">Contact</a>
+<a href="account.html" style="margin:15px;">Account</a></div>
+
+<div class="container">
+
+<!-- Cart Section -->
+<div id="cartContainer">
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<h3 id="total"></h3>
+
+<button 
+  style="background:purple; color:white; width:100%; padding:16px; font-size:16px; border:none; border-radius:10px; margin-bottom:10px; cursor:pointer; transition:0.3s;" 
+  onmouseover="this.style.background='#540b94'" 
+  onmouseout="this.style.background='#6a0dad'" 
+  onclick="window.location.href='products.html'">
+  Shop More
+</button>
+
+<button id="clearCartBtn" onclick="clearCart()">Clear Cart</button>
+</div>
+
+<!-- Checkout Section -->
+<div class="checkout-card">
+<h2>Billing & Payment</h2>
+<form onsubmit="placeOrder(event)">
+<input id="name" required placeholder="Full Name">
+<input id="email" placeholder="Email Address">
+<input id="phone" required placeholder="Phone Number">
+<textarea id="address" required placeholder="Shipping Address"></textarea>
+
+<div class="summary" id="summaryBox"></div>
+<h3 id="checkoutTotal"></h3>
+
+<h2>Payment Method</h2>
+<select id="payment" required onchange="showPaymentFields()">
+<option value="">Select Payment Method</option>
+<option value="card">Debit/Credit Card</option>
+<option value="upi">UPI</option>
+<option value="cod">Cash on Delivery</option>
+</select>
+
+<div id="cardBox">
+<input id="cardNum" placeholder="Card Number" pattern="[0-9]{16}">
+<input id="cardName" placeholder="Name on Card">
+<input id="cvv" placeholder="CVV" pattern="[0-9]{3}">
+</div>
+
+<div id="upiBox">
+<input id="upi" placeholder="UPI ID (example@upi)">
+</div>
+
+<!-- NGO Donation Toggle -->
+<div id="donationBox" style="border-radius:10px; margin:14px 0; transition:0.3s;">
+
+  <!-- Checked state -->
+  <div id="ngoActive" style="background:#f0faf4; border:1.5px solid #27ae60; border-radius:10px; padding:14px 16px;">
+    <div style="display:flex; align-items:flex-start; gap:12px;">
+      <input type="checkbox" id="donationToggle" checked onchange="toggleNGO()"
+        style="width:18px; height:18px; margin-top:3px; accent-color:#27ae60; cursor:pointer; flex-shrink:0;">
+      <div style="flex:1;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <b style="color:#1a7a45; font-size:15px;">🌱 Donate 2% to NGOs</b>
+          <span style="background:#27ae60; color:white; font-size:10px; padding:2px 8px; border-radius:20px; font-weight:600; letter-spacing:0.5px;">INCLUDED</span>
+        </div>
+        <p style="margin:4px 0 0; font-size:13px; color:#555;">
+          Adding <b id="donationDisplay">₹0</b> to support children's education &amp; the environment.
+        </p>
+        <p style="margin:6px 0 0; font-size:12px; color:#888;">
+          💡 This is <u>optional</u> — uncheck the box above if you'd prefer not to contribute.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unchecked / removed state -->
+  <div id="ngoRemoved" style="display:none; background:#fff8f8; border:1.5px dashed #ccc; border-radius:10px; padding:12px 16px;">
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <input type="checkbox" id="donationToggle2" onchange="toggleNGO()"
+        style="width:18px; height:18px; accent-color:#27ae60; cursor:pointer; flex-shrink:0;">
+      <div>
+        <span style="font-size:14px; color:#888;">🌱 NGO donation removed.</span>
+        <span style="font-size:13px; color:#27ae60; cursor:pointer; margin-left:6px; text-decoration:underline;" onclick="reAddNGO()">Add it back?</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="background:#f7f7f7; border-radius:8px; padding:12px 14px; margin-bottom:10px; font-size:14px;">
+  <div style="display:flex; justify-content:space-between;"><span>Subtotal</span><span id="baseTotal">₹0</span></div>
+  <div style="display:flex; justify-content:space-between; color:#555; margin-top:6px;">
+    <span>GST (6%)</span><span id="gstTotal">₹0</span>
+  </div>
+  <div id="donationRow" style="display:flex; justify-content:space-between; color:#27ae60; margin-top:6px;">
+    <span>🌱 NGO Donation (2%)</span><span id="donationLineAmt">₹0</span>
+  </div>
+  <div style="display:flex; justify-content:space-between; font-weight:700; font-size:16px; margin-top:8px; border-top:1px solid #ddd; padding-top:8px;">
+    <span>Grand Total</span><span id="grandTotal" style="color:#6a0dad;">₹0</span>
+  </div>
+</div>
+
+<button type="submit">Place Order</button>
+<button type="button" onclick="window.location.href='invoice.html'">View Invoice</button>
+</form>
+</div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+// Cart logic
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+function toast(msg){let t=document.getElementById("toast"); t.innerText=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2500);}
+function save(){localStorage.setItem("cart",JSON.stringify(cart));}
+function loadCart(){
+  let box=document.getElementById("cartItems");
+  box.innerHTML=""; let total=0;
+  if(cart.length===0){box.innerHTML="<p>Cart Empty</p>";}
+  cart.forEach((item,i)=>{
+    total+=item.price*item.qty;
+    box.innerHTML+=`
+    <div class="card">
+      <img src="${item.img}">
+      <div class="card-info">
+        <h3>${item.name}</h3>
+        <p>₹${item.price}</p>
+        <div class="qty-buttons">
+          <button onclick="qty(${i},-1)">−</button>
+          <b>${item.qty}</b>
+          <button onclick="qty(${i},1)">+</button>
+        </div>
+        <p><b>₹${item.price*item.qty}</b></p>
+        <button class="remove-btn" onclick="removeItem(${i})">Remove</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById("total").innerHTML="Total: ₹"+total;
+  document.getElementById("checkoutTotal").innerHTML="Total: ₹"+total;
+  let summary=""; cart.forEach(item=>summary+=`<p>${item.name} × ${item.qty} = ₹${item.price*item.qty}</p>`);
+  document.getElementById("summaryBox").innerHTML=summary||"No items";
+  save();
+  updateTotal();
+}
+
+function toggleNGO(){
+  let checked = document.getElementById("donationToggle").checked;
+  document.getElementById("ngoActive").style.display = checked ? "block" : "none";
+  document.getElementById("ngoRemoved").style.display = checked ? "none" : "block";
+  // Keep the two checkboxes in sync
+  if(document.getElementById("donationToggle2")) document.getElementById("donationToggle2").checked = false;
+  updateTotal();
+}
+function reAddNGO(){
+  document.getElementById("donationToggle").checked = true;
+  toggleNGO();
+}
+function updateTotal(){
+  let base=cart.reduce((s,i)=>s+(i.price*i.qty),0);
+  let gst=parseFloat((base*0.06).toFixed(2));
+  let donate=document.getElementById("donationToggle").checked;
+  let donationAmt=donate ? parseFloat((base*0.02).toFixed(2)) : 0;
+  let grand=base+gst+donationAmt;
+  document.getElementById("baseTotal").innerText="₹"+base.toFixed(2);
+  document.getElementById("gstTotal").innerText="₹"+gst.toFixed(2);
+  if(document.getElementById("donationDisplay")) document.getElementById("donationDisplay").innerText="₹"+donationAmt.toFixed(2);
+  document.getElementById("donationLineAmt").innerText="₹"+donationAmt.toFixed(2);
+  document.getElementById("grandTotal").innerText="₹"+grand.toFixed(2);
+  document.getElementById("donationRow").style.display=donate?"flex":"none";
+}
+function qty(i,v){cart[i].qty+=v; if(cart[i].qty<=0){toast(cart[i].name+" removed"); cart.splice(i,1);} else{toast("Quantity updated");} loadCart();}
+function removeItem(i){cart.splice(i,1); toast("Item removed"); loadCart();}
+function clearCart(){cart=[]; save(); loadCart(); toast("Cart cleared");}
+function showPaymentFields(){let m=document.getElementById("payment").value; document.getElementById("cardBox").style.display="none"; document.getElementById("upiBox").style.display="none"; if(m==="card"){document.getElementById("cardBox").style.display="block";} if(m==="upi"){document.getElementById("upiBox").style.display="block";}}
+
+// Place order
+                
+function placeOrder(e){
+  e.preventDefault();
+  if(cart.length===0){toast("Cart empty"); return;}
+  let payment=document.getElementById("payment").value;
+  if(!payment){alert("Select payment method"); return;}
+  if(payment==="card"){if(!cardNum.value||!cardName.value||!cvv.value){alert("Fill card details"); return;}}
+  if(payment==="upi"){if(!upi.value){alert("Enter UPI ID"); return;}}
+  
+  // Get or create userId so orders can be linked to the account
+  let existingUser = JSON.parse(localStorage.getItem("user") || "null");
+  let userId = (existingUser && existingUser.userId) ? existingUser.userId : Date.now().toString();
+
+  let base=cart.reduce((sum,i)=>sum+(i.price*i.qty),0);
+  let gst=parseFloat((base*0.06).toFixed(2));
+  let donate=document.getElementById("donationToggle").checked;
+  let donationAmt=donate ? parseFloat((base*0.02).toFixed(2)) : 0;
+
+  let orderData={
+    items: cart,
+    subtotal: base,
+    gstAmount: gst,
+    total: base + gst + donationAmt,
+    donation: donate,
+    donationAmount: donationAmt,
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value || "Not Provided",
+    phone: document.getElementById("phone").value,
+    address: document.getElementById("address").value,
+    payment_method: payment,
+    date: new Date(),
+    userId: userId
+  };
+
+  // Save user info to localStorage for invoice (preserve userId)
+  localStorage.setItem("user", JSON.stringify({
+    name: orderData.name,
+    email: orderData.email,
+    phone: orderData.phone,
+    address: orderData.address,
+    userId: userId
+  }));
+
+  fetch("http://localhost:5000/order",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(orderData)
+  })
+  .then(res=>{
+    if(!res.ok){throw new Error("Server response failed");}
+    return res.json();
+  })
+  .then(data=>{
+    toast("Order Placed ✅ Invoice: " + data.invoice);
+
+    // save invoice for invoice page
+    localStorage.setItem("lastInvoice", JSON.stringify({
+      invoice:data.invoice,
+      order:orderData
+    }));
+
+    cart=[];
+    save();
+    loadCart();
+    document.querySelector("form").reset();
+  })
+  .catch(err=>{
+    console.error(err);
+    toast("Server not running ❌");
+  });
+}
+
+
+  
+
+loadCart();
+</script>
+</body>
+</html>

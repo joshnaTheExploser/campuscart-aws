@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Products</title>
+</head>
+
+<body style="margin:0; font-family:Arial; background:#f2f2f2;">
+
+<!-- Header -->
+<div style="background:purple; color:white; padding:15px; text-align:center;">
+<h1>Our Products</h1>
+</div>
+
+<!-- Navigation -->
+<div style="background:#ffffff; padding:10px; text-align:center; border-bottom:1px solid #ddd;">
+<a href="index.html" style="margin:15px;">Home</a>
+<a href="products.html" style="margin:15px;">Products</a>
+<a href="wishlist.html" style="margin:15px;">Wishlist</a>
+<a href="cart.html" style="margin:15px;">Cart</a>
+<a href="contact.html" style="margin:15px;">Contact</a>
+<a href="account.html" style="margin:15px;">Account</a>
+</div>
+
+<!-- Search Bar -->
+<div style="text-align:center; padding:15px;">
+<input type="text" id="searchInput" placeholder="Search products..."
+style="width:60%; padding:10px; border-radius:25px; border:1px solid #ccc; outline:none;"
+onkeyup="searchProducts()">
+</div>
+<p id="noProductMsg" style="text-align:center; display:none; color:red; font-weight:bold;">
+Product not available, we will make it available soon
+</p>
+
+<!-- Product Section -->
+<div style="display:flex; justify-content:center; flex-wrap:wrap; gap:40px;">
+
+<!-- PRODUCT CARD TEMPLATE STYLE NOTE -->
+
+<!-- Product 1 -->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/classamtebook.jpeg" width="150">
+<h3>classmate notebook</h3>
+<p>₹20</p>
+
+<button onclick="addToCart('Classmate Notebook',50,'images/classamtebook.jpeg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Classmate Notebook"
+onclick="toggleWishlist('Classmate Notebook',50,'images/classamtebook.jpeg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+
+<!-- Product 2 -->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/flairpen.jpeg" width="150">
+<h3>Flair Pen</h3>
+<p>₹20</p>
+
+<button onclick="addToCart('Flair Pen',50,'images/flairpen.jpeg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Flair Pen"
+onclick="toggleWishlist('Flair Pen',50,'images/flairpen.jpeg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+
+<!-- Product 3 -->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/pencilbox1.jpeg" width="150">
+<h3>Pencil Box</h3>
+<p>₹120</p>
+
+<button onclick="addToCart('Pencil Box',120,'images/pencilbox1.jpeg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Pencil Box"
+onclick="toggleWishlist('Pencil Box',120,'images/pencilbox1.jpeg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+
+<!-- Product 4 -->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/delimmarkers.jpeg" width="150">
+<h3>deli markers</h3>
+<p>₹240</p>
+
+<button onclick="addToCart('Delimarkers',240,'images/delimarkers.jpeg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Delimarkers"
+onclick="toggleWishlist('Delimarkers',240,'images/delimarkers.jpeg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+
+<!-- Product 5 -->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/caryons.jpeg" width="150">
+<h3>Caryons</h3>
+<p>₹240</p>
+
+<button onclick="addToCart('Caryons',240,'images/caryons.jpeg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Caryons"
+onclick="toggleWishlist('Caryons',240,'images/caryons.jpeg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+
+<!-- Product 6 -->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/kit.jpeg" width="150">
+<h3>classmate Kit</h3>
+<p>₹240</p>
+
+<button onclick="addToCart('Kit',240,'images/kit.jpeg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Kit"
+onclick="toggleWishlist('Kit',240,'images/kit.jpeg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+
+
+<!-- Product 7 -->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/notebook.jpg" width="150">
+<h3>Notebook</h3>
+<p>₹100</p>
+
+<button onclick="addToCart('Notebook',100,'images/notebook.jpg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Notebook"
+onclick="toggleWishlist('Notebook',100,'images/notebook.jpg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+
+<!-- Product 8-->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/pen.jpeg" width="150">
+<h3>Pen</h3>
+<p>₹70</p>
+
+<button onclick="addToCart('Pen',70,'images/pen.jpeg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Pen"
+onclick="toggleWishlist('Pen',70,'images/pen.jpeg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+
+
+<!-- Produuct 9 -->
+<div class="product" style="background:white; padding:15px; margin:10px; width:28%; text-align:center; border-radius:10px;">
+<img src="images/stapler.jpeg" width="150">
+<h3>Stapler</h3>
+<p>₹60</p>
+
+<button onclick="addToCart('Stapler',60,'images/stapler .jpeg')" 
+style="background:green; color:white; padding:8px 15px; border:none; border-radius:5px;">
+Add to Cart
+</button>
+
+<span id="heart-Stapler"
+onclick="toggleWishlist('Stapler',60,'images/stapler.jpeg')"
+style="cursor:pointer;font-size:22px;margin-left:10px;display:inline-block;transform:scale(1.3);">
+♡
+</span>
+</div>
+</div>
+
+<!-- Footer -->
+<div style="background:purple; color:white; text-align:center; padding:15px;">
+<p>© 2026 CAMPUSCART | All Rights Reserved</p>
+</div>
+
+<script>
+
+function addToCart(name,price,img){
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let existing = cart.find(p => p.name===name);
+if(existing){ existing.qty +=1; }
+else{ cart.push({name,price,img,qty:1}); }
+localStorage.setItem("cart", JSON.stringify(cart));
+alert("Added to cart");
+}
+
+function toggleWishlist(name,price,img){
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+let index = wishlist.findIndex(p=>p.name===name);
+let heart = document.getElementById("heart-"+name);
+
+if(index>-1){
+wishlist.splice(index,1);
+heart.innerText="♡";
+}else{
+wishlist.push({name,price,img});
+heart.innerText="❤️";
+}
+
+localStorage.setItem("wishlist",JSON.stringify(wishlist));
+}
+
+window.onload=function(){
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+wishlist.forEach(item=>{
+let heart=document.getElementById("heart-"+item.name);
+if(heart){ heart.innerText="❤️"; }
+});
+}
+
+function searchProducts(){
+let input = document.getElementById("searchInput").value.toLowerCase();
+let products = document.getElementsByClassName("product");
+let found = false;
+
+for(let i=0;i<products.length;i++){
+let title = products[i].getElementsByTagName("h3")[0].innerText.toLowerCase();
+
+if(title.includes(input)){
+products[i].style.display = "block";
+found = true;
+}else{
+products[i].style.display = "none";
+}
+}
+
+document.getElementById("noProductMsg").style.display = found ? "none" : "block";
+}
+</script>
+
+</body>
+</html>

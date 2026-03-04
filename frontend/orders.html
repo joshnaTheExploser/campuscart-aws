@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>All Orders</title>
+<style>
+body{font-family:Arial; background:#eef1f5; margin:0; padding:0;}
+h1{background:#6a0dad; color:white; padding:18px; text-align:center; margin:0;}
+#ordersContainer{padding:20px;}
+.order-card{
+background:white; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); margin-bottom:20px;
+}
+.order-card h3{margin:0 0 10px 0;}
+.order-card p{margin:4px 0;}
+.items{
+margin-left:20px;
+}
+.items p{margin:2px 0;}
+</style>
+</head>
+<body>
+
+<h1>All Orders</h1>
+
+<!-- Navigation -->
+<div style="background:#ffffff; padding:10px; text-align:center; border-bottom:1px solid #ddd;">
+<a href="index.html" style="margin:15px;">Home</a>
+<a href="products.html" style="margin:15px;">Products</a>
+<a href="wishlist.html" style="margin:15px;">Wishlist</a>
+<a href="cart.html" style="margin:15px;">Cart</a>
+<a href="contact.html" style="margin:15px;">Contact</a>
+<a href="account.html" style="margin:15px;">Account</a>
+</div>
+
+<div id="ordersContainer"></div>
+
+<script>
+function loadOrders(){
+fetch("http://localhost:5000/orders")
+.then(res=>res.json())
+.then(data=>{
+    const container = document.getElementById("ordersContainer");
+    container.innerHTML = "";
+    
+    if(data.length===0){
+        container.innerHTML = "<h2>No Orders Yet</h2>";
+        return;
+    }
+
+    data.forEach((order,i)=>{
+        let orderHTML = `
+        <div class="order-card">
+            <h3>Order #${i+1}</h3>
+            <p><b>Date:</b> ${new Date(order.date).toLocaleString()}</p>
+            <p><b>Total:</b> ₹${order.total}</p>
+            <p><b>Items:</b></p>
+            <div class="items">
+        `;
+        order.items.forEach(item=>{
+            orderHTML += `<p>${item.name} - ₹${item.price} × ${item.qty} = ₹${item.price*item.qty}</p>`;
+        });
+        orderHTML += `</div></div>`;
+        container.innerHTML += orderHTML;
+    });
+})
+.catch(err=>{
+    alert("Could not load orders. Make sure backend is running.");
+});
+}
+
+loadOrders();
+</script>
+
+</body>
+</html>
