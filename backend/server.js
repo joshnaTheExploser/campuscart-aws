@@ -144,12 +144,6 @@ app.get('/profile', (req, res) => {
     });
 });
 
-// GET orders
-app.get('/orders', async (req, res) => {
-    const orders = await Order.find({ userId: "123" });
-    res.json(orders);
-});
-
 
 // ================== ⭐ ADDED ROUTES ONLY ==================
 
