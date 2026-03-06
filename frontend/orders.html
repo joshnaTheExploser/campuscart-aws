@@ -35,7 +35,7 @@ margin-left:20px;
 
 <script>
 function loadOrders(){
-fetch("https://campuscart-aws-gb49.vercel.app/orders")
+fetch("http://localhost:5000/orders")
 .then(res=>res.json())
 .then(data=>{
     const container = document.getElementById("ordersContainer");
